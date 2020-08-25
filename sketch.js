@@ -1,74 +1,63 @@
-var s;
+var snake;
 var grid = 20;
-var w,h;
-var f;
+var food;
+var w;
+var h;
 
 function setup() {
-  createCanvas(650,650);
-  
-  s = new snake;
-
-  frameRate(5);
-
+  createCanvas(400, 400);
   w = floor(width / grid);
   h = floor(height / grid);
-  
-  food();
+  frameRate(5);
+  snake = new Snake();
+  foodLocation();
 }
 
-function food(){
+function foodLocation() {
   var x = floor(random(w));
   var y = floor(random(h));
-  f = createVector(x,y);
+  food = createVector(x, y);
+
 }
 
-function keyPressed(){
-  if(keyCode === 37){
-    s.direct(-1,0);
-  }
-  
-  else if(keyCode === 38){
-    s.direct(0,-1);
+function keyPressed() {
+  if (keyCode === LEFT_ARROW) {
+    snake.setDir(-1, 0);
+  } 
+  else if (keyCode === RIGHT_ARROW) {
+    snake.setDir(1, 0);
+  } 
+  else if (keyCode === DOWN_ARROW) {
+    snake.setDir(0, 1);
+  } 
+  else if (keyCode === UP_ARROW) {
+    snake.setDir(0, -1);
+  } 
+  else if (key == ' ') {
+    snake.grow();
   }
 
-  else if(keyCode === 39){
-    s.direct(1,0);
-  }
-
-  else if(keyCode === 40){
-    s.direct(0,1);
-  }
 }
-
-/*
-left arrow	37
-up arrow	38
-right arrow	39
-down arrow	40
-*/
 
 function draw() {
+  scale(grid);
   background(0);
-
-  s.display();
-  s.move();
-
-  if (s.eat(f)) {
-    food();
+  if (snake.eat(food)) {
+    foodLocation();
   }
+  snake.update();
+  snake.show();
 
-  if (s.gameover()) {
-    stroke(0);
-    strokeWeight(4);
-    textSize(20);
-    text("END GAME",325,325);
-    background(255);    
+  if (snake.endGame()) {    
+    background(255, 0, 0);
+    text("You Lost",200,200);
+    noLoop();
   }
 
   noStroke();
-  fill(255,0,0);
-  rect(f.x,f.y,30,30);
-  
-  drawSprites();
+  fill(255, 0, 0);
+  rect(food.x, food.y, 1, 1);
 }
+
+
 
